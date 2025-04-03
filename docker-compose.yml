@@ -1,0 +1,40 @@
+# docker file to run legacy php apps
+
+version: '3.1'
+
+services:
+
+    web:
+        build: . 
+        #image: php:5.6-apache
+        container_name: resource_pm_app
+        volumes:
+            - .:/var/www/html
+        ports: 
+            - "8000:80"
+        depends_on:
+            - db
+
+    db:
+        image: mysql:5.7
+        container_name: resource_pm_mysql
+        restart: always
+        environment:
+            MYSQL_ROOT_PASSWORD: rootpassword
+            MYSQL_DATABASE: resource_pm
+            MYSQL_USER: user 
+            MYSQL_PASSWORD: userpassword
+        ports:
+        - "3306:3306"
+
+    phpymyadmin:
+        image: phpmyadmin/phpmyadmin
+        container_name: phpmyadmin
+        restart: always
+        ports:
+            - 8080:80
+        environment:
+            - PMA_HOST=db
+            - PMA_PORT=3306
+            - PMA_USER=user
+            - PMA_PASSWORD=userpassword
